@@ -10,6 +10,7 @@ import { ScoreBreakdownPanel } from '@/components/profile/ScoreBreakdown';
 import { ExplainabilityReport } from '@/components/profile/ExplainabilityReport';
 import { CommitFrequencyHeatmap } from '@/components/profile/CommitFrequencyHeatmap';
 import { CommitQualityPanel } from '@/components/profile/CommitQualityPanel';
+import { JDMatchPanel } from '@/components/profile/JDMatchPanel';
 import { RadarChart } from '@/components/charts/RadarChart';
 import { LanguageDonut } from '@/components/charts/LanguageDonut';
 import { SkillBars } from '@/components/charts/SkillBars';
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { FileWarning } from 'lucide-react';
 import { QAAgent } from '@/components/profile/QAAgent';
 import { ChatPanel } from '@/components/chat/ChatPanel';
+import { useJDMatch } from '@/hooks/useJDMatch';
 
 interface Props {
   params: Promise<{ username: string }>;
@@ -33,6 +35,8 @@ export default function ProfilePage({ params }: Props) {
   const topRepos = developer?.repos.slice(0, 5).map(r => r.name) || [];
   const { data: heatmapData } = useHeatmap(username);
   const { data: qualityData } = useCommitQuality(username, topRepos);
+  
+  const jdMatch = useJDMatch();
   
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'repos'>('overview');
 
@@ -146,6 +150,17 @@ export default function ProfilePage({ params }: Props) {
                           <ExplainabilityReport skills={developer.skills} />
                         </div>
 
+                        <JDMatchPanel
+                          developer={developer}
+                          jdText={jdMatch.jdText}
+                          setJDText={jdMatch.setJDText}
+                          matchResult={jdMatch.matchResult}
+                          aiAnalysis={jdMatch.aiAnalysis}
+                          isAnalyzing={jdMatch.isAnalyzing}
+                          onAnalyze={() => jdMatch.analyzeMatch(developer)}
+                          onClear={jdMatch.clearMatch}
+                        />
+
                         {qualityData && (
                           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                             <CommitQualityPanel data={qualityData} />
@@ -199,7 +214,7 @@ export default function ProfilePage({ params }: Props) {
             </motion.div>
             
             <QAAgent developer={developer} />
-            <ChatPanel developer={developer} />
+            <ChatPanel developer={developer} matchResult={jdMatch.matchResult} />
           </motion.div>
         )}
       </main>

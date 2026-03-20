@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, X, ArrowRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Developer } from '@/lib/types';
+import { Developer, MatchResult } from '@/lib/types';
 import { useAppStore } from '@/store';
 import { useChat } from '@/hooks/useChat';
 import { ChatMessage } from './ChatMessage';
@@ -13,6 +13,7 @@ import { ResumeUpload } from './ResumeUpload';
 
 interface Props {
   developer: Developer;
+  matchResult?: MatchResult | null;
 }
 
 const HIRING_CHIPS = [
@@ -23,7 +24,13 @@ const HIRING_CHIPS = [
   "Code quality signals",
 ];
 
-export function ChatPanel({ developer }: Props) {
+const JD_CHIPS = [
+  "Why does this candidate score this?",
+  "Can they grow into the missing skills?",
+  "Resume vs JD match",
+];
+
+export function ChatPanel({ developer, matchResult }: Props) {
   const { isChatOpen, setChatOpen } = useAppStore();
   const {
     messages,
@@ -36,8 +43,10 @@ export function ChatPanel({ developer }: Props) {
     handleResumeClear,
     hasResume,
     messagesEndRef,
-  } = useChat(developer);
+  } = useChat(developer, matchResult);
   const [resumeExpanded, setResumeExpanded] = useState(true);
+
+  const chips = matchResult ? [...JD_CHIPS, ...HIRING_CHIPS.slice(0, 2)] : HIRING_CHIPS;
 
   return (
     <AnimatePresence>
@@ -135,7 +144,7 @@ export function ChatPanel({ developer }: Props) {
                       I&apos;m a hiring assistant. Ask me anything about this candidate — I&apos;ll cite specific repos and resume evidence.
                     </p>
                   </div>
-                  <SuggestedQuestions chips={HIRING_CHIPS} onSelect={handleSend} />
+                  <SuggestedQuestions chips={chips} onSelect={handleSend} />
                 </div>
               )}
 
@@ -161,7 +170,7 @@ export function ChatPanel({ developer }: Props) {
             {/* Suggested chips when there are messages */}
             {messages.length > 0 && messages.length < 4 && (
               <div className="px-4 py-2 border-t border-[var(--bg-border)]/50">
-                <SuggestedQuestions chips={HIRING_CHIPS.slice(0, 3)} onSelect={handleSend} />
+                <SuggestedQuestions chips={chips.slice(0, 3)} onSelect={handleSend} />
               </div>
             )}
 

@@ -141,3 +141,33 @@ export type QualityAnalysisData = {
   aggregateScore: number;
   repoScores: RepoScore[];
 };
+
+// ── JD Match Feature ───────────────────────────────────────────
+export type JDSkill = {
+  name: string;
+  category: SkillCategory;
+  required: boolean;
+};
+
+export type MatchedSkill = JDSkill & {
+  confidence: number;
+  source_repos: string[];
+};
+
+export type MissingSkill = JDSkill;
+
+export type MatchResult = {
+  matchScore: number;
+  matched: MatchedSkill[];
+  missing: MissingSkill[];
+  requiredMatched: number;
+  requiredTotal: number;
+  optionalMatched: number;
+  optionalTotal: number;
+};
+
+export type JDMatchAnalysis = {
+  matchResult: MatchResult;
+  aiAnalysis: string;
+  jdSkillsDetected: JDSkill[];
+};

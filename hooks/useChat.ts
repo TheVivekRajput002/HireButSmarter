@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Developer } from '@/lib/types';
+import { Developer, MatchResult } from '@/lib/types';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -22,7 +22,7 @@ interface UseChatReturn {
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
-export function useChat(developer: Developer): UseChatReturn {
+export function useChat(developer: Developer, matchResult?: MatchResult | null): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -63,8 +63,17 @@ export function useChat(developer: Developer): UseChatReturn {
       commit_quality_score: developer.commit_quality_score,
       commits_analyzed: developer.commit_quality?.repoScores.reduce((acc, r) => acc + r.commitCount, 0),
       resume_text: resumeText || 'No resume uploaded',
+      jd_match_context: matchResult ? {
+        matchScore: matchResult.matchScore,
+        requiredMatched: matchResult.requiredMatched,
+        requiredTotal: matchResult.requiredTotal,
+        optionalMatched: matchResult.optionalMatched,
+        optionalTotal: matchResult.optionalTotal,
+        missingRequired: matchResult.missing.filter(s => s.required).map(s => s.name).join(', '),
+        missingOptional: matchResult.missing.filter(s => !s.required).map(s => s.name).join(', '),
+      } : null,
     };
-  }, [developer, resumeText]);
+  }, [developer, resumeText, matchResult]);
 
   const handleSend = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;

@@ -32,7 +32,15 @@ Commit Consistency Score: ${ctx.consistency_score || 'N/A'} (Active days: ${ctx.
 Commit Quality Score: ${ctx.commit_quality_score || 'N/A'} (Analyzed ${ctx.commits_analyzed || 0} commits)
 Resume: ${ctx.resume_text || 'No resume uploaded — answering from GitHub data only'}
 --- END ---
-
+${ctx.jd_match_context ? `
+--- JD MATCH (active) ---
+Match Score: ${ctx.jd_match_context.matchScore}/100
+Required matched: ${ctx.jd_match_context.requiredMatched}/${ctx.jd_match_context.requiredTotal}
+Optional matched: ${ctx.jd_match_context.optionalMatched}/${ctx.jd_match_context.optionalTotal}
+Missing required: ${ctx.jd_match_context.missingRequired || 'None'}
+Missing optional: ${ctx.jd_match_context.missingOptional || 'None'}
+--- END JD MATCH ---
+` : ''}
 Guidelines:
 - Always cite the specific repo or resume line that supports your claim
 - If comparing skills, reference confidence percentages
