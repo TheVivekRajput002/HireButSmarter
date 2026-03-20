@@ -13,9 +13,29 @@ export const SKILL_TAXONOMY: Record<SkillCategory, string[]> = {
   Testing: ['Jest', 'Vitest', 'Cypress', 'Playwright', 'pytest', 'Testing Library', 'Mocha', 'Chai', 'Selenium', 'JUnit'],
 };
 
+// ── Alias Normalization ───────────────────────────────────────
+// Maps variant spellings → single canonical display name.
+// Key = lowercase alias, Value = canonical name (must match a taxonomy keyword).
+const SKILL_ALIASES: Record<string, string> = {
+  'nodejs':          'Node.js',
+  'nextjs':          'Next.js',
+  'tailwind':        'TailwindCSS',
+  'postgres':        'PostgreSQL',
+  'k8s':             'Kubernetes',
+  'ruby on rails':   'Rails',
+  'sass':            'SCSS',
+};
+
+/**
+ * Normalize a detected keyword to its canonical name.
+ */
+export function canonicalSkillName(keyword: string): string {
+  return SKILL_ALIASES[keyword.toLowerCase()] ?? keyword;
+}
+
 /**
  * Extract skills from a single text blob (README content, repo description, etc.)
- * Returns a set of skill names found.
+ * Returns a set of canonical skill names found.
  */
 export function extractSkillsFromText(text: string): Set<string> {
   const found = new Set<string>();
@@ -26,7 +46,7 @@ export function extractSkillsFromText(text: string): Set<string> {
       // Case-insensitive word boundary search
       const pattern = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
       if (pattern.test(text) || lowerText.includes(keyword.toLowerCase())) {
-        found.add(keyword);
+        found.add(canonicalSkillName(keyword));
       }
     }
   }
