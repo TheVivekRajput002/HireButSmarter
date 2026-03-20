@@ -21,7 +21,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SkillLens — Talent Intelligence from GitHub",
+  title: "HireButSmarter — Talent Intelligence from GitHub",
   description:
     "Analyze any GitHub profile in seconds. Extract verified skills, compute an explainable Potential Score, and chat with an AI agent grounded in real developer data.",
   keywords: [

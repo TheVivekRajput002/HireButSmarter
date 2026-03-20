@@ -147,7 +147,7 @@ export default function Home() {
             <form onSubmit={handleSubmit} className="relative group">
               {/* Glow ring */}
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-green)] to-emerald-400 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
-              <div className="relative flex items-center bg-[var(--bg-surface)] border border-[var(--bg-border)] rounded-xl p-2 shadow-2xl focus-within:ring-2 focus-within:ring-[var(--brand-green)] transition-all">
+              <div className="relative flex items-center bg-[var(--bg-surface)] border border-[var(--bg-border)] rounded-xl p-2 shadow-2xl transition-all">
                 <Github className="w-6 h-6 text-[var(--text-muted)] ml-3 shrink-0" />
                 <input
                   type="text"
