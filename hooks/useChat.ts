@@ -80,14 +80,17 @@ export function useChat(developer: Developer): UseChatReturn {
         }),
       });
 
-      if (!response.ok) throw new Error('Failed to get response');
-
       const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
-    } catch {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. The `/api/chat` endpoint may not be configured yet (Phase 9).'
+        content: `Sorry, something went wrong: ${message}`
       }]);
     } finally {
       setIsLoading(false);

@@ -1,9 +1,9 @@
 // app/api/chat/route.ts — Hiring Agent AI endpoint
 
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Build the grounded system prompt
     const ctx = developerContext;
-    const systemPrompt = `You are a technical hiring assistant. Answer ONLY from the candidate data below.
+    const systemInstruction = `You are a technical hiring assistant. Answer ONLY from the candidate data below.
 Do not invent skills or experience. Cite specific repos or resume lines as evidence.
 Keep responses to 3–5 sentences. If you cannot answer from the data, say so.
 
@@ -36,25 +36,19 @@ Guidelines:
 - If comparing skills, reference confidence percentages
 - Never hallucinate skills that aren't in the data above`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    // Build conversation history for multi-turn
+    const contents = messages.map((msg: { role: string; content: string }) => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }],
+    }));
 
-    // Build conversation history
-    const contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [
-      { role: 'user', parts: [{ text: systemPrompt + '\n\n' + messages[0].content }] },
-    ];
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      config: { systemInstruction },
+      contents,
+    });
 
-    // Add subsequent messages
-    for (let i = 1; i < messages.length; i++) {
-      contents.push({
-        role: messages[i].role === 'user' ? 'user' as const : 'model' as const,
-        parts: [{ text: messages[i].content }],
-      });
-    }
-
-    const result = await model.generateContent({ contents });
-    const response = result.response.text();
-
-    return NextResponse.json({ response });
+    return NextResponse.json({ response: response.text });
   } catch (error: unknown) {
     console.error('Chat API error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';

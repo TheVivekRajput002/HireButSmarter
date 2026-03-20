@@ -1,9 +1,9 @@
 // app/api/qa/route.ts — Q&A Agent AI endpoint (stateless)
 
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
 
     const ctx = developerContext;
-    const systemPrompt = `You are an AI profile assistant for a developer's public GitHub.
+    const systemInstruction = `You are an AI profile assistant for a developer's public GitHub.
 Answer ONLY from the GitHub data below. Do not invent skills or scores.
 When asked about role fit or gaps, reason from detected skill categories.
 Keep responses clear and actionable, 3–5 sentences.
@@ -36,23 +36,18 @@ Guidelines:
 - For gap analysis, identify missing skill categories
 - Never hallucinate skills or repos that aren't listed above`;
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const contents = messages.map((msg: { role: string; content: string }) => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }],
+    }));
 
-    const contents: Array<{ role: 'user' | 'model'; parts: Array<{ text: string }> }> = [
-      { role: 'user', parts: [{ text: systemPrompt + '\n\n' + messages[0].content }] },
-    ];
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      config: { systemInstruction },
+      contents,
+    });
 
-    for (let i = 1; i < messages.length; i++) {
-      contents.push({
-        role: messages[i].role === 'user' ? 'user' as const : 'model' as const,
-        parts: [{ text: messages[i].content }],
-      });
-    }
-
-    const result = await model.generateContent({ contents });
-    const response = result.response.text();
-
-    return NextResponse.json({ response });
+    return NextResponse.json({ response: response.text });
   } catch (error: unknown) {
     console.error('QA API error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
