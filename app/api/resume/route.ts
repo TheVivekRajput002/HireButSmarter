@@ -1,6 +1,7 @@
 // app/api/resume/route.ts — Resume PDF text extraction
 
 import { NextRequest, NextResponse } from 'next/server';
+import { PDFParse } from 'pdf-parse';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,14 +23,20 @@ export async function POST(request: NextRequest) {
     // Read file buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // pdf-parse is a CommonJS module — use require to avoid TS ESM default export issues
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const pdfParse = require('pdf-parse');
-    const data = await pdfParse(buffer);
+    // Polyfill for DOMMatrix issue in modern Node/Next.js
+    if (typeof global.DOMMatrix === 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (global as any).DOMMatrix = class DOMMatrix {};
+    }
+
+    const parser = new PDFParse({ data: buffer });
+    const textResult = await parser.getText();
+    const infoResult = await parser.getInfo();
+    await parser.destroy();
 
     return NextResponse.json({
-      text: data.text,
-      pages: data.numpages,
+      text: textResult.text,
+      pages: infoResult.total,
       fileName: file.name,
     });
   } catch (error: unknown) {

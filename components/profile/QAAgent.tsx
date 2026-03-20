@@ -15,8 +15,8 @@ const SUGGESTED_CHIPS = [
   "My strongest skills",
   "Roles that suit this profile",
   "Skills missing for a senior role",
-  "Why is my score what it is?",
-  "What would improve my score?"
+  "My commit consistency",
+  "Commit quality feedback"
 ];
 
 export function QAAgent({ developer }: QAAgentProps) {

@@ -58,6 +58,10 @@ export function useChat(developer: Developer): UseChatReturn {
       skills_with_confidence_and_repo_list: skillsList,
       top_5_repos_with_complexity_and_description: topRepos,
       language_percentages: languagePercentages,
+      consistency_score: developer.consistency_score,
+      active_days: developer.heatmap_data?.stats.active_days,
+      commit_quality_score: developer.commit_quality_score,
+      commits_analyzed: developer.commit_quality?.repoScores.reduce((acc, r) => acc + r.commitCount, 0),
       resume_text: resumeText || 'No resume uploaded',
     };
   }, [developer, resumeText]);

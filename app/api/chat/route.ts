@@ -28,6 +28,8 @@ GitHub: ${ctx.username} | Score: ${ctx.score}/100 (${ctx.label}) | Repos: ${ctx.
 Skills: ${ctx.skills_with_confidence_and_repo_list || 'None detected'}
 Top Repos: ${ctx.top_5_repos_with_complexity_and_description || 'None'}
 Languages: ${ctx.language_percentages || 'None'}
+Commit Consistency Score: ${ctx.consistency_score || 'N/A'} (Active days: ${ctx.active_days || 'N/A'})
+Commit Quality Score: ${ctx.commit_quality_score || 'N/A'} (Analyzed ${ctx.commits_analyzed || 0} commits)
 Resume: ${ctx.resume_text || 'No resume uploaded — answering from GitHub data only'}
 --- END ---
 

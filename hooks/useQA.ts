@@ -45,6 +45,10 @@ export function useQA(developer: Developer): UseQAReturn {
       skills_with_confidence: skillsList,
       top_5_repos: topRepos,
       language_percentages: languagePercentages,
+      consistency_score: developer.consistency_score,
+      active_days: developer.heatmap_data?.stats.active_days,
+      commit_quality_score: developer.commit_quality_score,
+      commits_analyzed: developer.commit_quality?.repoScores.reduce((acc, r) => acc + r.commitCount, 0),
     };
   }, [developer]);
 

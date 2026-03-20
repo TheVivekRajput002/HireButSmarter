@@ -103,13 +103,7 @@ export function ProfileCard({ developer, className }: Props) {
           <Bot className="w-4 h-4" />
           Ask AI
         </button>
-        <button 
-          onClick={() => setQAOpen(true)}
-          className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 h-10 rounded-lg bg-[var(--bg-elevated)] text-[var(--text-primary)] border border-[var(--bg-border)] hover:border-[var(--brand-green)] active:scale-95 transition-all text-sm font-semibold"
-        >
-          <HelpCircle className="w-4 h-4" />
-          Q&A
-        </button>
+       
         
         <div className="hidden md:block flex-1" />
 

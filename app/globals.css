@@ -156,10 +156,12 @@
   background: var(--text-muted);
 }
 
-/* Focus ring override — green, not blue */
-*:focus-visible {
-  outline: 2px solid var(--brand-green);
-  outline-offset: 2px;
+@layer base {
+  /* Focus ring override — green, not blue */
+  *:focus-visible {
+    outline: 2px solid var(--brand-green);
+    outline-offset: 2px;
+  }
 }
 
 /* Skeleton pulse animation */

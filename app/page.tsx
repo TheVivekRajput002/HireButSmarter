@@ -117,7 +117,7 @@ export default function Home() {
           variants={container}
           initial="hidden"
           animate="show"
-          className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center space-y-8 py-28"
+          className="relative z-10 w-full max-w-3xl mx-auto flex flex-col items-center text-center space-y-8 py-8"
         >
           {/* Badge — from old component */}
           <motion.div variants={item}>
@@ -147,7 +147,7 @@ export default function Home() {
             <form onSubmit={handleSubmit} className="relative group">
               {/* Glow ring */}
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--brand-green)] to-emerald-400 rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
-              <div className="relative flex items-center bg-[var(--bg-surface)] border border-[var(--bg-border)] rounded-xl p-2 shadow-2xl transition-all">
+              <div className="relative flex items-center bg-[var(--bg-surface)] border-none rounded-xl p-2 shadow-2xl transition-all">
                 <Github className="w-6 h-6 text-[var(--text-muted)] ml-3 shrink-0" />
                 <input
                   type="text"
@@ -155,7 +155,7 @@ export default function Home() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isSubmitting}
-                  className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-lg font-display text-[var(--text-primary)] placeholder:text-[var(--text-muted)] w-full"
+                  className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 px-4 py-3 text-lg font-display text-[var(--text-primary)] placeholder:text-[var(--text-muted)] w-full"
                   autoFocus
                   required
                 />

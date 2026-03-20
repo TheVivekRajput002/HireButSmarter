@@ -83,6 +83,21 @@ export async function GET(
     const potentialScore = calculateScore(scoreBreakdown);
     const potentialLabel = getScoreLabel(potentialScore);
 
+    // Fetch Heatmap and Commit Quality Signals internally
+    const reqUrl = new URL(request.url);
+    const origin = `${reqUrl.protocol}//${reqUrl.host}`;
+
+    const [heatmapRes, qualityRes] = await Promise.allSettled([
+      fetch(`${origin}/api/github/heatmap?username=${username}`).then(r => r.json()),
+      fetch(`${origin}/api/github/commit-quality?username=${username}&repos=${topRepoNames.slice(0, 5).join(',')}`).then(r => r.json())
+    ]);
+
+    const heatmapResult = heatmapRes.status === 'fulfilled' && !heatmapRes.value.error ? heatmapRes.value : null;
+    const qualityResult = qualityRes.status === 'fulfilled' && !qualityRes.value.error ? qualityRes.value : null;
+
+    const consistencyScore = heatmapResult?.stats?.consistency_score ?? null;
+    const qualityScore = qualityResult?.aggregateScore ?? null;
+
     // 8. Save to Supabase (upsert by username)
     let candidateId = `local-${username}`;
     try {
@@ -98,6 +113,8 @@ export async function GET(
         potential_score: potentialScore,
         potential_label: potentialLabel,
         score_breakdown: scoreBreakdown,
+        consistency_score: consistencyScore,
+        commit_quality_score: qualityScore,
         skills,
         languages,
         repos: repos.sort((a, b) => b.complexity_score - a.complexity_score),
@@ -108,7 +125,13 @@ export async function GET(
         const { data, error } = await supabaseServer
           .from('candidates')
           .upsert(
-            { username, profile_data: profileData, analyzed_at: new Date().toISOString() },
+            { 
+              username, 
+              profile_data: profileData,
+              heatmap_data: heatmapResult,
+              commit_quality: qualityResult,
+              analyzed_at: new Date().toISOString() 
+            },
             { onConflict: 'username' }
           )
           .select('id')
@@ -137,6 +160,8 @@ export async function GET(
       potential_score: potentialScore,
       potential_label: potentialLabel,
       score_breakdown: scoreBreakdown,
+      consistency_score: consistencyScore,
+      commit_quality_score: qualityScore,
       skills,
       languages,
       repos: repos.sort((a, b) => b.complexity_score - a.complexity_score),

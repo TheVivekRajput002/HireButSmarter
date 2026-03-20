@@ -105,3 +105,20 @@ export async function fetchReadmesBatch(
 export function totalStars(repos: GitHubRepo[]): number {
   return repos.reduce((sum, r) => sum + r.stargazers_count, 0);
 }
+
+/**
+ * Shared GitHub Auth Helper for extended endpoints using Next.js fetch API
+ */
+export async function fetchWithAuth(url: string) {
+  const headers: HeadersInit = { Accept: 'application/vnd.github+json' };
+  if (process.env.GITHUB_TOKEN) {
+    headers['Authorization'] = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+  const res = await fetch(url, { headers, next: { revalidate: 300 } });
+  
+  if (res.status === 403) throw new Error('RATE_LIMIT');
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GitHub ${res.status}`);
+  
+  return res.json();
+}

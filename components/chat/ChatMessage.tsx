@@ -12,7 +12,7 @@ export function ChatMessage({ role, content }: Props) {
   const isUser = role === 'user';
 
   return (
-    <div className={cn("flex gap-3 max-w-[85%]", isUser ? "ml-auto flex-row-reverse" : "mr-auto")}>
+    <div className={cn("flex gap-3 max-w-[95%]", isUser ? "ml-auto flex-row-reverse" : "mr-auto")}>
       <div
         className={cn(
           "w-8 h-8 rounded-full flex items-center justify-center shrink-0",

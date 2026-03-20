@@ -19,8 +19,8 @@ const HIRING_CHIPS = [
   "Top 3 strengths",
   "Best role fit",
   "Any red flags?",
-  "Frontend strength",
-  "Resume vs GitHub match",
+  "Commit history analysis",
+  "Code quality signals",
 ];
 
 export function ChatPanel({ developer }: Props) {
@@ -59,7 +59,7 @@ export function ChatPanel({ developer }: Props) {
             exit={{ x: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
             className={cn(
-              "fixed right-0 top-0 bottom-0 w-full sm:w-[420px] z-50",
+              "fixed right-0 top-0 bottom-0 w-full sm:w-[550px] z-50",
               "flex flex-col bg-[var(--bg-surface)] border-l border-[var(--bg-border)] shadow-2xl"
             )}
           >

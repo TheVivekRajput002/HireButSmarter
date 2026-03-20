@@ -34,3 +34,31 @@ export function useProfile(username: string) {
 
   return query;
 }
+
+export function useHeatmap(username: string) {
+  return useQuery({
+    queryKey: ['heatmap', username],
+    queryFn: async () => {
+      const { data } = await axios.get(`/api/github/heatmap?username=${username}`);
+      return data;
+    },
+    enabled: !!username,
+    staleTime: 1000 * 60 * 60, // 1 hour
+    retry: 1,
+  });
+}
+
+export function useCommitQuality(username: string, repos: string[]) {
+  const reposStr = repos.slice(0, 5).join(',');
+  return useQuery({
+    queryKey: ['commit-quality', username, reposStr],
+    queryFn: async () => {
+      const { data } = await axios.get(`/api/github/commit-quality?username=${username}&repos=${reposStr}`);
+      return data;
+    },
+    enabled: !!username && repos.length > 0,
+    staleTime: 1000 * 60 * 60, // 1 hour
+    retry: 1,
+  });
+}
+

@@ -3,11 +3,13 @@
 
 import { use, useState } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { useProfile } from '@/hooks/useProfile';
+import { useProfile, useHeatmap, useCommitQuality } from '@/hooks/useProfile';
 import Navbar from '@/components/Navbar';
 import { ProfileCard } from '@/components/profile/ProfileCard';
 import { ScoreBreakdownPanel } from '@/components/profile/ScoreBreakdown';
 import { ExplainabilityReport } from '@/components/profile/ExplainabilityReport';
+import { CommitFrequencyHeatmap } from '@/components/profile/CommitFrequencyHeatmap';
+import { CommitQualityPanel } from '@/components/profile/CommitQualityPanel';
 import { RadarChart } from '@/components/charts/RadarChart';
 import { LanguageDonut } from '@/components/charts/LanguageDonut';
 import { SkillBars } from '@/components/charts/SkillBars';
@@ -27,6 +29,11 @@ export default function ProfilePage({ params }: Props) {
   const username = resolvedParams.username;
   
   const { data: developer, isLoading, error } = useProfile(username);
+  
+  const topRepos = developer?.repos.slice(0, 5).map(r => r.name) || [];
+  const { data: heatmapData } = useHeatmap(username);
+  const { data: qualityData } = useCommitQuality(username, topRepos);
+  
   const [activeTab, setActiveTab] = useState<'overview' | 'skills' | 'repos'>('overview');
 
   // Animation variants
@@ -121,6 +128,11 @@ export default function ProfilePage({ params }: Props) {
                     >
                       {/* Left: Charts */}
                       <div className="lg:col-span-2 space-y-6">
+                        {heatmapData && (
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <CommitFrequencyHeatmap data={heatmapData} />
+                          </motion.div>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="p-6 rounded-xl bg-[var(--bg-surface)] border border-[var(--bg-border)] flex flex-col items-center justify-center">
                             <RadarChart skills={developer.skills} />
@@ -133,12 +145,22 @@ export default function ProfilePage({ params }: Props) {
                         <div className="p-6 rounded-xl bg-[var(--bg-surface)] border border-[var(--bg-border)]">
                           <ExplainabilityReport skills={developer.skills} />
                         </div>
+
+                        {qualityData && (
+                          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <CommitQualityPanel data={qualityData} />
+                          </motion.div>
+                        )}
                       </div>
 
                       {/* Right: Breakdown & AI panels */}
                       <div className="space-y-6">
                         <div className="p-6 rounded-xl bg-[var(--bg-surface)] border border-[var(--bg-border)]">
-                          <ScoreBreakdownPanel breakdown={developer.score_breakdown} />
+                          <ScoreBreakdownPanel 
+                            breakdown={developer.score_breakdown} 
+                            consistencyScore={developer.consistency_score}
+                            commitQualityScore={developer.commit_quality_score}
+                          />
                         </div>
                         <div className="p-6 rounded-xl bg-[var(--bg-surface)] border border-[var(--bg-border)]">
                           <RepoExplorer repos={developer.repos} compact />

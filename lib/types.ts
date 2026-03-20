@@ -63,6 +63,10 @@ export type Developer = {
   potential_score: number;                 // 0–100
   potential_label: PotentialLabel;
   score_breakdown: ScoreBreakdown;         // Per-signal breakdown for explainability
+  consistency_score: number | null;
+  commit_quality_score: number | null;
+  heatmap_data?: HeatmapData | null;
+  commit_quality?: QualityAnalysisData | null;
   skills: Skill[];
   languages: Language[];
   repos: Repo[];
@@ -82,4 +86,58 @@ export type ChatMessage = {
 export type QAMessage = {
   role: 'user' | 'assistant';
   content: string;
+};
+
+// ── Commit Feature Extensions ──────────────────────────────────
+export type DailyCommitCount = {
+  date: string;      // "YYYY-MM-DD"
+  count: number;
+  repos: string[];
+};
+
+export type HeatmapStats = {
+  total_commits: number;
+  active_days: number;
+  longest_streak: number;
+  current_streak: number;
+  peak_day: DailyCommitCount;
+  consistency_score: number;
+};
+
+export type HeatmapData = {
+  weeks: DailyCommitCount[][];
+  stats: HeatmapStats;
+};
+
+export type CommitDimensions = {
+  length: number;
+  pattern: number;
+  conventional: number;
+  imperative: number;
+  body: number;
+};
+
+export type CommitSample = {
+  sha: string;
+  message: string;
+  score: {
+    total: number;
+    dimensions: CommitDimensions;
+  };
+};
+
+export type RepoScore = {
+  repo: string;
+  commitCount: number;
+  repoScore: number;
+  dimensions: CommitDimensions;
+  samples: {
+    best: CommitSample[];
+    worst: CommitSample[];
+  };
+};
+
+export type QualityAnalysisData = {
+  aggregateScore: number;
+  repoScores: RepoScore[];
 };

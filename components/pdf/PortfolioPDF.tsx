@@ -148,6 +148,19 @@ export const PortfolioPDF = ({ developer }: { developer: Developer }) => {
                <Text style={styles.breakdownLabel}>Account Activity</Text>
                <Text style={styles.breakdownValue}>{developer.score_breakdown.account_activity}/20</Text>
              </View>
+             
+             {developer.consistency_score != null && (
+               <View style={[styles.breakdownRow, { marginTop: 4, paddingTop: 4, borderTopWidth: 1, borderTopColor: '#e2e8f0' }]}>
+                 <Text style={styles.breakdownLabel}>Commit Consistency</Text>
+                 <Text style={styles.breakdownValue}>{developer.consistency_score}/100</Text>
+               </View>
+             )}
+             {developer.commit_quality_score != null && (
+               <View style={styles.breakdownRow}>
+                 <Text style={styles.breakdownLabel}>Commit Quality</Text>
+                 <Text style={styles.breakdownValue}>{developer.commit_quality_score}/100</Text>
+               </View>
+             )}
           </View>
         </View>
 
