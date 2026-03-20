@@ -44,9 +44,13 @@ export function LanguageDonut({ languages, className }: Props) {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className={cn("flex flex-col md:flex-row items-center justify-between gap-6 w-full", className)}
+      className={cn("flex flex-col items-center gap-4 w-full", className)}
     >
-      <div className="h-64 w-64 shrink-0 relative">
+      <h3 className="text-sm font-semibold text-[var(--text-secondary)] uppercase tracking-wider self-start">
+        Languages
+      </h3>
+
+      <div className="h-48 w-48 shrink-0 relative">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -80,26 +84,19 @@ export function LanguageDonut({ languages, className }: Props) {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex-1 w-full flex flex-col gap-2">
-        <h3 className="text-sm font-semibold text-[var(--text-secondary)] mb-2 uppercase tracking-wider">
-          Languages
-        </h3>
-        <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
-          {data.map((lang, idx) => (
-            <div key={lang.name} className="flex items-center justify-between text-sm py-1 border-b border-[var(--bg-border)] last:border-0">
-              <div className="flex items-center gap-2 truncate">
-                <div 
-                  className="w-3 h-3 rounded-full shrink-0" 
-                  style={{ backgroundColor: COLORS[idx % COLORS.length] }} 
-                />
-                <span className="text-[var(--text-primary)] truncate">{lang.name}</span>
-              </div>
-              <span className="font-display text-[var(--text-secondary)] shrink-0 ml-2">
-                {lang.percentage.toFixed(1)}%
-              </span>
-            </div>
-          ))}
-        </div>
+      <div className="w-full flex flex-wrap justify-center gap-x-4 gap-y-2">
+        {data.map((lang, idx) => (
+          <div key={lang.name} className="flex items-center gap-1.5 text-sm">
+            <div 
+              className="w-2.5 h-2.5 rounded-full shrink-0" 
+              style={{ backgroundColor: COLORS[idx % COLORS.length] }} 
+            />
+            <span className="text-[var(--text-primary)]">{lang.name}</span>
+            <span className="font-display text-[var(--text-muted)] text-xs">
+              {lang.percentage.toFixed(1)}%
+            </span>
+          </div>
+        ))}
       </div>
     </motion.div>
   );
