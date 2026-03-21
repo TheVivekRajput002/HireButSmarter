@@ -64,7 +64,7 @@ export function JDMatchPanel({
           <div className="text-left">
             <h3 className="font-bold text-sm text-[var(--text-primary)]">Job Description Match</h3>
             <p className="text-xs text-[var(--text-muted)]">
-              {matchResult ? `${matchResult.matchScore}/100 — ${getScoreLabel(matchResult.matchScore)}` : 'Paste a JD to analyze fit'}
+              {matchResult ? `${matchResult.matchScore}/100 — ${getScoreLabel(matchResult.matchScore)}` : 'Paste a Job Description to analyze fit'}
             </p>
           </div>
         </div>

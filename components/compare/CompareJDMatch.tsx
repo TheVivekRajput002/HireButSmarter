@@ -78,7 +78,7 @@ export function CompareJDMatch({
 
   const summaryText = hasResults
     ? `${matchResult1!.matchScore} vs ${matchResult2!.matchScore} — ${winner === 1 ? `@${dev1.username} leads` : winner === 2 ? `@${dev2.username} leads` : 'Tied'}`
-    : 'Paste a JD to compare candidates';
+    : 'Paste a Job Description to compare candidates';
 
   // Render a score gauge
   const ScoreGauge = ({ score, username, isWinner, color }: { score: number; username: string; isWinner: boolean; color: string }) => (
@@ -189,7 +189,7 @@ export function CompareJDMatch({
             <Trophy className="w-5 h-5 text-[var(--brand-green)]" />
           </div>
           <div className="text-left">
-            <h3 className="font-bold text-sm text-[var(--text-primary)]">JD Comparison Match</h3>
+            <h3 className="font-bold text-sm text-[var(--text-primary)]">Job Description Comparison</h3>
             <p className="text-xs text-[var(--text-muted)]">{summaryText}</p>
           </div>
         </div>
@@ -237,7 +237,7 @@ export function CompareJDMatch({
                       ) : (
                         <>
                           <Sparkles className="w-4 h-4" />
-                          Compare Against JD
+                          Compare Against Job Description
                         </>
                       )}
                     </button>
