@@ -7,6 +7,8 @@ import Navbar from '@/components/Navbar';
 import { ProfileCard } from '@/components/profile/ProfileCard';
 import { CompareRadarChart } from '@/components/compare/CompareRadarChart';
 import { CompareResults } from '@/components/compare/CompareResults';
+import { CompareJDMatch } from '@/components/compare/CompareJDMatch';
+import { useJDCompare } from '@/hooks/useJDCompare';
 import { ArrowLeftRight, Search, Share2, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -28,6 +30,8 @@ function ComparePageContent() {
 
   const { data: dev1, isLoading: load1, error: err1 } = useProfile(queryU1);
   const { data: dev2, isLoading: load2, error: err2 } = useProfile(queryU2);
+
+  const jdCompare = useJDCompare();
 
   const handleCompare = (e: React.FormEvent) => {
     e.preventDefault();
@@ -177,6 +181,20 @@ function ComparePageContent() {
                 <CompareResults dev1={dev1} dev2={dev2} />
               </div>
             </div>
+
+            {/* JD Comparison Match */}
+            <CompareJDMatch
+              dev1={dev1}
+              dev2={dev2}
+              jdText={jdCompare.jdText}
+              setJDText={jdCompare.setJDText}
+              matchResult1={jdCompare.matchResult1}
+              matchResult2={jdCompare.matchResult2}
+              aiVerdict={jdCompare.aiVerdict}
+              isAnalyzing={jdCompare.isAnalyzing}
+              onAnalyze={() => jdCompare.analyzeCompare(dev1, dev2)}
+              onClear={jdCompare.clearCompare}
+            />
           </motion.div>
         )}
       </main>

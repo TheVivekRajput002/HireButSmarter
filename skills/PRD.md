@@ -125,6 +125,7 @@ A stateless, self-serve AI assistant embedded on every profile page. Available i
 | Feature | What it does |
 |---|---|
 | Developer Comparison | Side-by-side with stat differentials and overlapping radar chart |
+| **JD Comparison Match** | Recruiter pastes a job description on the comparison page; both candidates are scored against the JD using the same skill-extraction and match-scoring pipeline. AI generates a comparative verdict: who is more suitable, each candidate's strengths for the role, and key differentiators. Uses the same `extractJDSkills` + `computeMatchScore` pipeline with a dedicated Gemini prompt for two-candidate analysis. |
 | Portfolio PDF Export | One-page PDF: profile + skills + top 3 repos + Potential Score + explainability summary |
 
 ---
