@@ -81,10 +81,10 @@ export const PortfolioPDF = ({ developer, jdMatchAnalysis }: { developer: Develo
 
   const getTierColor = (score: number) => {
     if (score > 80) return '#22c55e'; // Expert
-    if (score > 60) return '#3b82f6'; // Proficient
-    if (score > 40) return '#f59e0b'; // Developing
-    if (score > 20) return '#f97316'; // Emerging
-    return '#ef4444'; // Beginner
+    if (score > 60) return '#3b82f6'; // Average
+    if (score > 40) return '#f59e0b'; // Beginner
+    if (score > 20) return '#f97316'; // Learning
+    return '#ef4444'; // Learning
   };
 
   const tierColor = getTierColor(developer.potential_score);

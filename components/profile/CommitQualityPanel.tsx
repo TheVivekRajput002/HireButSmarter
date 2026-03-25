@@ -8,10 +8,10 @@ export function CommitQualityPanel({ data }: { data: QualityAnalysisData }) {
 
   const getQualityLabel = (score: number) => {
     if (score <= 20) return 'Needs Improvement';
-    if (score <= 40) return 'Basic';
-    if (score <= 60) return 'Developing';
-    if (score <= 80) return 'Good';
-    return 'Excellent';
+    if (score <= 40) return 'Learning';
+    if (score <= 60) return 'Beginner';
+    if (score <= 80) return 'Average';
+    return 'Expert';
   };
 
   const getBarColor = (val: number) => {

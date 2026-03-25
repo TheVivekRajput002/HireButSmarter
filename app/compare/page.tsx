@@ -59,7 +59,7 @@ function ComparePageContent() {
     <div className="min-h-screen bg-[var(--bg-base)] flex flex-col font-body">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-[1152px] mx-auto p-4 md:p-6 pb-24 space-y-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 pb-24 space-y-8">
         {/* Header Area */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[var(--bg-surface)] p-6 rounded-xl border border-[var(--bg-border)]">
           <div>

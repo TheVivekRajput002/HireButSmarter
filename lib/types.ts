@@ -9,10 +9,9 @@ export type SkillCategory =
   | 'Testing';
 
 export type PotentialLabel =
+  | 'Learning'
   | 'Beginner'
-  | 'Emerging'
-  | 'Developing'
-  | 'Proficient'
+  | 'Average'
   | 'Expert';
 
 export type ScoreBreakdown = {

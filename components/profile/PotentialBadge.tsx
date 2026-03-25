@@ -45,10 +45,9 @@ export function PotentialBadge({ score, label, className }: Props) {
   const getColorClass = (label: PotentialLabel) => {
     switch (label) {
       case 'Expert': return 'score-expert border-[var(--score-expert)]';
-      case 'Proficient': return 'score-prof border-[var(--score-prof)]';
-      case 'Developing': return 'score-dev border-[var(--score-dev)]';
-      case 'Emerging': return 'score-emerging border-[var(--score-emerging)]';
-      case 'Beginner': return 'score-beginner border-[var(--score-beginner)]';
+      case 'Average': return 'score-prof border-[var(--score-prof)]';
+      case 'Beginner': return 'score-dev border-[var(--score-dev)]';
+      case 'Learning': return 'score-beginner border-[var(--score-beginner)]';
       default: return 'text-[var(--text-primary)] border-[var(--bg-border)]';
     }
   };

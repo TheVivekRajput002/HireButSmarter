@@ -23,7 +23,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-[var(--bg-border)] bg-[var(--bg-base)]/80 backdrop-blur-md">
-      <div className="container mx-auto max-w-[1152px] h-16 px-4 flex items-center justify-between">
+      <div className="w-full max-w-7xl mx-auto h-16 px-4 flex items-center justify-between">
         
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2 group">
@@ -44,6 +44,7 @@ export default function Navbar() {
               placeholder="Search GitHub user..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              suppressHydrationWarning
               className={cn(
                 "w-full h-9 rounded-full bg-[var(--bg-elevated)] border border-[var(--bg-border)]",
                 "pl-10 pr-4 text-sm font-display text-[var(--text-primary)]",
@@ -66,6 +67,7 @@ export default function Navbar() {
 
           <button
             onClick={toggleTheme}
+            suppressHydrationWarning
             className="w-9 h-9 flex items-center justify-center rounded-md text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] transition-colors"
             title="Toggle Theme"
           >

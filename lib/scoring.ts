@@ -62,8 +62,7 @@ export function calculateScore(breakdown: ScoreBreakdown): number {
  */
 export function getScoreLabel(score: number): PotentialLabel {
   if (score >= 81) return 'Expert';
-  if (score >= 61) return 'Proficient';
-  if (score >= 41) return 'Developing';
-  if (score >= 21) return 'Emerging';
-  return 'Beginner';
+  if (score >= 61) return 'Average';
+  if (score >= 41) return 'Beginner';
+  return 'Learning';
 }

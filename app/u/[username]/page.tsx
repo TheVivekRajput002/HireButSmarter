@@ -55,7 +55,7 @@ export default function ProfilePage({ params }: Props) {
     <div className="min-h-screen bg-[var(--bg-base)] flex flex-col font-body">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-[1152px] mx-auto p-4 md:p-6 pb-24">
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 pb-24">
         {/* Loading State */}
         {isLoading && (
           <div className="w-full space-y-6 animate-pulse">

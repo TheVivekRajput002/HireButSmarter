@@ -155,6 +155,7 @@ export default function Home() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isSubmitting}
+                  suppressHydrationWarning
                   className="flex-1 bg-transparent border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 px-4 py-3 text-lg font-display text-[var(--text-primary)] placeholder:text-[var(--text-muted)] w-full"
                   autoFocus
                   required
@@ -166,6 +167,7 @@ export default function Home() {
                     <button
                       type="submit"
                       disabled={!username.trim() || isSubmitting}
+                      suppressHydrationWarning
                       className="inline-flex rounded-full text-center items-center justify-center bg-gradient-to-tr from-zinc-300/10 via-[var(--brand-green)]/20 to-transparent text-[var(--brand-green)] border-[var(--brand-green)]/30 border-[1px] hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 py-3 px-6 font-bold gap-2"
                     >
                       {isSubmitting ? (
