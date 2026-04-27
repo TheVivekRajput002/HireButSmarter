@@ -19,19 +19,45 @@ export async function POST(request: NextRequest) {
 
     // Build the grounded system prompt
     const ctx = developerContext;
+    
+    // Debug logging to check what data we're receiving
+    console.log('Chat API - received context:', {
+      hasResumeText: !!ctx.resume_text,
+      hasStructuredData: !!ctx.structured_resume_data,
+      resumeTextLength: ctx.resume_text?.length || 0,
+      structuredDataKeys: ctx.structured_resume_data ? Object.keys(ctx.structured_resume_data) : []
+    });
+    
+    const resumeSection = ctx.structured_resume_data ? `
+--- RESUME DATA (Structured) ---
+Resume Skills: ${ctx.structured_resume_data.skills}
+Resume Experience: ${ctx.structured_resume_data.experience}
+Resume Education: ${ctx.structured_resume_data.education}
+Resume Contact: Email: ${ctx.structured_resume_data.contact.email}, GitHub: ${ctx.structured_resume_data.contact.github}, LinkedIn: ${ctx.structured_resume_data.contact.linkedin}
+--- END RESUME DATA ---
+` : ctx.resume_text && ctx.resume_text.trim() !== '' ? `
+--- RESUME DATA (Raw Text) ---
+${ctx.resume_text}
+--- END RESUME DATA ---
+` : `
+--- RESUME DATA ---
+No resume uploaded — answering from GitHub data only
+--- END RESUME DATA ---
+`;
+
     const systemInstruction = `You are a technical hiring assistant. Answer ONLY from the candidate data below.
-Do not invent skills or experience. Cite specific repos or resume lines as evidence.
+Do not invent skills or experience. Cite specific repos, resume lines, or resume sections as evidence.
 Keep responses to 3–5 sentences. If you cannot answer from the data, say so.
 
 --- CANDIDATE DATA ---
 GitHub: ${ctx.username} | Score: ${ctx.score}/100 (${ctx.label}) | Repos: ${ctx.repo_count} | Stars: ${ctx.total_stars}
-Skills: ${ctx.skills_with_confidence_and_repo_list || 'None detected'}
+GitHub Skills: ${ctx.skills_with_confidence_and_repo_list || 'None detected'}
 Top Repos: ${ctx.top_5_repos_with_complexity_and_description || 'None'}
 Languages: ${ctx.language_percentages || 'None'}
 Commit Consistency Score: ${ctx.consistency_score || 'N/A'} (Active days: ${ctx.active_days || 'N/A'})
 Commit Quality Score: ${ctx.commit_quality_score || 'N/A'} (Analyzed ${ctx.commits_analyzed || 0} commits)
-Resume: ${ctx.resume_text || 'No resume uploaded — answering from GitHub data only'}
---- END ---
+${resumeSection}
+--- END CANDIDATE DATA ---
 ${ctx.jd_match_context ? `
 --- JD MATCH (active) ---
 Match Score: ${ctx.jd_match_context.matchScore}/100
@@ -42,9 +68,12 @@ Missing optional: ${ctx.jd_match_context.missingOptional || 'None'}
 --- END JD MATCH ---
 ` : ''}
 Guidelines:
-- Always cite the specific repo or resume line that supports your claim
-- If comparing skills, reference confidence percentages
-- Never hallucinate skills that aren't in the data above`;
+- Always cite the specific repo, resume line, or resume section that supports your claim
+- When discussing skills, reference both GitHub confidence percentages and resume skills
+- Compare GitHub activity with resume experience when relevant
+- For experience questions, reference specific resume job entries
+- For education questions, reference resume education section
+- Never hallucinate skills or experience that aren't in the data above`;
 
     // Build conversation history for multi-turn
     const contents = messages.map((msg: { role: string; content: string }) => ({

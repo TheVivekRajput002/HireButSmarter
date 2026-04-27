@@ -8,6 +8,27 @@ interface Message {
   content: string;
 }
 
+interface StructuredResumeData {
+  skills: string[];
+  experience: Array<{
+    title: string;
+    company: string;
+    duration: string;
+    description: string[];
+  }>;
+  education: Array<{
+    degree: string;
+    institution: string;
+    year: string;
+  }>;
+  contact: {
+    email?: string;
+    phone?: string;
+    linkedin?: string;
+    github?: string;
+  };
+}
+
 interface UseChatReturn {
   messages: Message[];
   input: string;
@@ -15,8 +36,9 @@ interface UseChatReturn {
   isLoading: boolean;
   resumeText: string | null;
   resumeFileName: string | null;
+  structuredResumeData: StructuredResumeData | null;
   handleSend: (text: string) => Promise<void>;
-  handleResumeUpload: (text: string, fileName: string) => void;
+  handleResumeUpload: (text: string, fileName: string, structuredData?: StructuredResumeData) => void;
   handleResumeClear: () => void;
   hasResume: boolean;
   messagesEndRef: React.RefObject<HTMLDivElement | null>;
@@ -28,6 +50,7 @@ export function useChat(developer: Developer, matchResult?: MatchResult | null):
   const [isLoading, setIsLoading] = useState(false);
   const [resumeText, setResumeText] = useState<string | null>(null);
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
+  const [structuredResumeData, setStructuredResumeData] = useState<StructuredResumeData | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll on new messages
@@ -49,6 +72,22 @@ export function useChat(developer: Developer, matchResult?: MatchResult | null):
       .map(l => `${l.name}: ${Math.round(l.percentage)}%`)
       .join(', ');
 
+    // Format structured resume data for better context
+    const formattedResumeData = structuredResumeData ? {
+      skills: structuredResumeData.skills.join(', ') || 'None detected',
+      experience: structuredResumeData.experience.map(exp => 
+        `${exp.title} at ${exp.company} (${exp.duration}): ${exp.description.slice(0, 2).join('; ')}`
+      ).join(' | ') || 'None detected',
+      education: structuredResumeData.education.map(edu => 
+        `${edu.degree} from ${edu.institution} (${edu.year})`
+      ).join(' | ') || 'None detected',
+      contact: {
+        email: structuredResumeData.contact.email || 'Not found',
+        github: structuredResumeData.contact.github || 'Not found',
+        linkedin: structuredResumeData.contact.linkedin || 'Not found'
+      }
+    } : null;
+
     return {
       username: developer.username,
       score: developer.potential_score,
@@ -63,6 +102,7 @@ export function useChat(developer: Developer, matchResult?: MatchResult | null):
       commit_quality_score: developer.commit_quality_score,
       commits_analyzed: developer.commit_quality?.repoScores.reduce((acc, r) => acc + r.commitCount, 0),
       resume_text: resumeText || 'No resume uploaded',
+      structured_resume_data: formattedResumeData,
       jd_match_context: matchResult ? {
         matchScore: matchResult.matchScore,
         requiredMatched: matchResult.requiredMatched,
@@ -73,7 +113,7 @@ export function useChat(developer: Developer, matchResult?: MatchResult | null):
         missingOptional: matchResult.missing.filter(s => !s.required).map(s => s.name).join(', '),
       } : null,
     };
-  }, [developer, resumeText, matchResult]);
+  }, [developer, resumeText, structuredResumeData, matchResult]);
 
   const handleSend = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -110,14 +150,22 @@ export function useChat(developer: Developer, matchResult?: MatchResult | null):
     }
   }, [messages, isLoading, generateContext]);
 
-  const handleResumeUpload = useCallback((text: string, fileName: string) => {
+  const handleResumeUpload = useCallback((text: string, fileName: string, structuredData?: StructuredResumeData) => {
+    console.log('useChat - Resume upload received:', {
+      textLength: text.length,
+      fileName,
+      hasStructuredData: !!structuredData,
+      structuredDataKeys: structuredData ? Object.keys(structuredData) : []
+    });
     setResumeText(text);
     setResumeFileName(fileName);
+    setStructuredResumeData(structuredData || null);
   }, []);
 
   const handleResumeClear = useCallback(() => {
     setResumeText(null);
     setResumeFileName(null);
+    setStructuredResumeData(null);
   }, []);
 
   return {
@@ -127,6 +175,7 @@ export function useChat(developer: Developer, matchResult?: MatchResult | null):
     isLoading,
     resumeText,
     resumeFileName,
+    structuredResumeData,
     handleSend,
     handleResumeUpload,
     handleResumeClear,

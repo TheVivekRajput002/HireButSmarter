@@ -92,3 +92,22 @@ HireButSmarter operates on the principle that AI scoring must be grounded and ex
 - Every score shows exactly which metrics contributed to it.
 - Every detected skill lists the confidence percentage and the specific repositories where it was found.
 - Every claim made by the AI Hiring Agent cites specific evidence from the user's GitHub or resume.
+
+## Keep Supabase Project Awake (Free Tier)
+
+Supabase may pause inactive free-tier projects after around 7 days without activity.
+This repo includes a keep-alive setup:
+
+- Edge Function: `supabase/functions/keep-alive/index.ts`
+- Cron migration: `supabase/migrations/20260427225700_keep_alive_cron.sql`
+
+### Apply It
+
+1. Enable `pg_cron` in Supabase Dashboard -> Database -> Extensions.
+2. Run the migration SQL in the Supabase SQL Editor (or via Supabase CLI migrations).
+3. Optional: deploy the edge function if you want an HTTP heartbeat endpoint:
+   ```bash
+   supabase functions deploy keep-alive
+   ```
+
+The cron job runs `select 1` every 12 hours so the database remains active.

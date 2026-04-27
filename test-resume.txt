@@ -1,0 +1,22 @@
+John Doe
+Software Engineer
+Email: john.doe@example.com
+GitHub: github.com/johndoe
+LinkedIn: linkedin.com/in/johndoe
+
+SKILLS
+JavaScript, React, Node.js, Python, AWS, Docker, Git, SQL, MongoDB
+
+EXPERIENCE
+Senior Software Engineer at Tech Corp (2020-Present)
+- Led development of microservices architecture
+- Implemented CI/CD pipelines
+- Mentored junior developers
+
+Software Developer at StartupXYZ (2018-2020)
+- Built React-based web applications
+- Developed REST APIs
+- Worked with agile methodologies
+
+EDUCATION
+Bachelor of Science in Computer Science from University of Technology (2018)

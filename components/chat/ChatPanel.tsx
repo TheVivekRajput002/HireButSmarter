@@ -30,6 +30,14 @@ const JD_CHIPS = [
   "Resume vs JD match",
 ];
 
+const RESUME_CHIPS = [
+  "Summarize work experience",
+  "Key technical skills from resume",
+  "Education background",
+  "Resume vs GitHub consistency",
+  "Career progression",
+];
+
 export function ChatPanel({ developer, matchResult }: Props) {
   const { isChatOpen, setChatOpen } = useAppStore();
   const {
@@ -46,7 +54,13 @@ export function ChatPanel({ developer, matchResult }: Props) {
   } = useChat(developer, matchResult);
   const [resumeExpanded, setResumeExpanded] = useState(true);
 
-  const chips = matchResult ? [...JD_CHIPS, ...HIRING_CHIPS.slice(0, 2)] : HIRING_CHIPS;
+  const chips = hasResume 
+    ? (matchResult 
+        ? [...RESUME_CHIPS.slice(0, 2), ...JD_CHIPS, ...HIRING_CHIPS.slice(0, 1)] 
+        : [...RESUME_CHIPS, ...HIRING_CHIPS.slice(0, 2)])
+    : (matchResult 
+        ? [...JD_CHIPS, ...HIRING_CHIPS.slice(0, 2)] 
+        : HIRING_CHIPS);
 
   return (
     <AnimatePresence>

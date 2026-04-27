@@ -4,8 +4,29 @@ import { useState, useRef } from 'react';
 import { Upload, FileText, X, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+interface StructuredResumeData {
+  skills: string[];
+  experience: Array<{
+    title: string;
+    company: string;
+    duration: string;
+    description: string[];
+  }>;
+  education: Array<{
+    degree: string;
+    institution: string;
+    year: string;
+  }>;
+  contact: {
+    email?: string;
+    phone?: string;
+    linkedin?: string;
+    github?: string;
+  };
+}
+
 interface Props {
-  onUpload: (text: string, fileName: string) => void;
+  onUpload: (text: string, fileName: string, structuredData?: StructuredResumeData) => void;
   uploadedFileName?: string | null;
   onClear: () => void;
 }
@@ -48,7 +69,7 @@ export function ResumeUpload({ onUpload, uploadedFileName, onClear }: Props) {
       }
 
       const data = await response.json();
-      onUpload(data.text, file.name);
+      onUpload(data.text, file.name, data.structuredData);
     } catch {
       setError('Failed to process resume. Please try again.');
     } finally {
